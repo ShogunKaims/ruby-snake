@@ -19,7 +19,10 @@ class Game
   end
 
   def tick
+    return if over?
+
     @snake.move
+    @over = true unless @board.inside?(@snake.head)
   end
 
   def render
