@@ -3,9 +3,14 @@ require_relative 'food'
 require_relative 'board'
 
 class Game
-  attr_reader :score
+  MODES = %i[classic chill].freeze
 
-  def initialize(width, height)
+  attr_reader :score, :mode
+
+  def initialize(width, height, mode: :classic)
+    raise ArgumentError, "unknown mode: #{mode}" unless MODES.include?(mode)
+
+    @mode = mode
     @board = Board.new(width, height)
     @snake = Snake.new(width / 2, height / 2)
     @food = Food.new(width, height)
@@ -25,7 +30,8 @@ class Game
   def tick
     return if over?
 
-    target = @board.wrap(@snake.next_head)
+    target = @snake.next_head
+    target = @board.wrap(target) if @mode == :chill
 
     if target == @food.position
       @snake.grow(target)
@@ -35,7 +41,7 @@ class Game
       @snake.move(target)
     end
 
-    @over = true if @snake.bites_itself?
+    @over = true if @snake.bites_itself? || !@board.inside?(@snake.head)
   end
 
   def render(theme = Board::DEFAULT_THEME)

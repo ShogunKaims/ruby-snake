@@ -6,12 +6,37 @@ WIDTH = 30
 HEIGHT = 18
 DELAY = 0.15
 
+MODE_LABELS = { classic: 'Original', chill: 'Chill' }.freeze
+
+MENU = [
+  'SNAKE',
+  '',
+  '  1. Original : sortir du tableau = game over',
+  "  2. Chill    : le serpent reapparait de l'autre cote",
+  '',
+  '  Appuie sur 1 ou 2  (q pour quitter)'
+].freeze
+
 DIRECTIONS = {
   "\e[A" => [0, -1], 'i' => [0, -1],
   "\e[B" => [0, 1],  'k' => [0, 1],
   "\e[C" => [1, 0],  'l' => [1, 0],
   "\e[D" => [-1, 0], 'j' => [-1, 0]
 }
+
+def choose_mode
+  $stdin.raw(intr: true) do
+    print "\e[2J\e[H\e[?25l#{MENU.join("\r\n")}\r\n"
+
+    loop do
+      case $stdin.getch
+      when '1' then return :classic
+      when '2' then return :chill
+      when 'q' then exit
+      end
+    end
+  end
+end
 
 def read_key
   return nil unless IO.select([$stdin], nil, nil, 0)
@@ -21,14 +46,14 @@ def read_key
 end
 
 def draw(game)
-  header = "Score : #{game.score}   (fleches ou IJKL, q pour quitter)"
+  header = "[#{MODE_LABELS[game.mode]}] Score : #{game.score}   (fleches ou IJKL, q pour quitter)"
   lines = [header] + game.render(Board::EMOJI_THEME).split("\n")
   print "\e[H" + lines.map { |line| "#{line}\e[K" }.join("\r\n") + "\r\n\e[J"
 end
 
-game = Game.new(WIDTH, HEIGHT)
-
 begin
+  game = Game.new(WIDTH, HEIGHT, mode: choose_mode)
+
   $stdin.raw(intr: true) do
     print "\e[?25l\e[2J"
 
