@@ -45,6 +45,11 @@ RSpec.describe Snake do
       expect(snake.head).to eq([6, 5])
     end
   end
+  describe '#bites_itself?' do
+  it 'is false for a new snake' do
+    expect(snake.bites_itself?).to eq(false)
+  end
+end
 
 
 end

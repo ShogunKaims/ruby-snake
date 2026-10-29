@@ -1,7 +1,7 @@
 class Snake
   attr_reader :body
 
-  
+
   def initialize(x, y)
     @body = [[x, y], [x - 1, y], [x - 2, y]]
     @direction = [1, 0]
@@ -31,5 +31,9 @@ class Snake
 
   def length
     @body.size
+  end
+
+  def bites_itself?
+    @body.drop(1).include?(head)
   end
 end
