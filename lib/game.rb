@@ -18,11 +18,22 @@ class Game
     @over
   end
 
+  def turn(direction)
+    @snake.turn(direction)
+  end
+
   def tick
     return if over?
 
-    @snake.move
-    @over = true unless @board.inside?(@snake.head)
+    if @snake.next_head == @food.position
+      @snake.grow
+      @score += 1
+      @food.respawn(@snake.body)
+    else
+      @snake.move
+    end
+
+    @over = true if !@board.inside?(@snake.head) || @snake.bites_itself?
   end
 
   def render
