@@ -8,7 +8,7 @@ A terminal Snake game in pure Ruby, with no gems at runtime. I built it step by 
 
 Requires Ruby 3+ (check with `ruby -v`).
 
-    git clone https://github.com/KaimsKamal/ruby-snake.git
+    git clone https://github.com/ShogunKaims/ruby-snake.git
     cd ruby-snake
     ruby bin/snake
 
