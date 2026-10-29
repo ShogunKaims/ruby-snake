@@ -1,21 +1,13 @@
 #!/usr/bin/env ruby
 require 'io/console'
 require_relative '../lib/game'
+require_relative '../lib/ui'
 
 WIDTH = 30
 HEIGHT = 18
 DELAY = 0.15
 
 MODE_LABELS = { classic: 'Original', chill: 'Chill' }.freeze
-
-MENU = [
-  'SNAKE',
-  '',
-  '  1. Original : sortir du tableau = game over',
-  "  2. Chill    : le serpent reapparait de l'autre cote",
-  '',
-  '  Appuie sur 1 ou 2  (q pour quitter)'
-].freeze
 
 DIRECTIONS = {
   "\e[A" => [0, -1], 'i' => [0, -1],
@@ -24,9 +16,20 @@ DIRECTIONS = {
   "\e[D" => [-1, 0], 'j' => [-1, 0]
 }
 
+def read_key
+  return nil unless IO.select([$stdin], nil, nil, 0)
+
+  key = $stdin.read_nonblock(3, exception: false)
+  key.is_a?(String) ? key : nil
+end
+
+def show(lines)
+  print "\e[2J\e[H\e[?25l#{lines.join("\r\n")}\r\n"
+end
+
 def choose_mode
   $stdin.raw(intr: true) do
-    print "\e[2J\e[H\e[?25l#{MENU.join("\r\n")}\r\n"
+    show(UI.title_screen)
 
     loop do
       case $stdin.getch
@@ -38,21 +41,14 @@ def choose_mode
   end
 end
 
-def read_key
-  return nil unless IO.select([$stdin], nil, nil, 0)
-
-  key = $stdin.read_nonblock(3, exception: false)
-  key.is_a?(String) ? key : nil
-end
-
 def draw(game)
-  header = "[#{MODE_LABELS[game.mode]}] Score : #{game.score}   (fleches ou IJKL, q pour quitter)"
-  lines = [header] + game.render(Board::EMOJI_THEME).split("\n")
+  grid = UI.frame(game.render(Board::EMOJI_THEME))
+  lines = [UI.status(MODE_LABELS[game.mode], game.score), *grid]
   print "\e[H" + lines.map { |line| "#{line}\e[K" }.join("\r\n") + "\r\n\e[J"
 end
 
-begin
-  game = Game.new(WIDTH, HEIGHT, mode: choose_mode)
+def play(mode)
+  game = Game.new(WIDTH, HEIGHT, mode: mode)
 
   $stdin.raw(intr: true) do
     print "\e[?25l\e[2J"
@@ -72,10 +68,40 @@ begin
       game.turn(pending) if pending
       game.tick
     end
+  end
 
+  game
+end
+
+def game_over_menu(game)
+  $stdin.raw(intr: true) do
     draw(game)
-    print "\r\nGAME OVER - score : #{game.score}\r\n"
+    sleep 0.8
+    nil while read_key
+    show(UI.game_over_screen(game.score, MODE_LABELS[game.mode]))
+
+    loop do
+      case $stdin.getch.downcase
+      when 'r' then return :replay
+      when 'm' then return :menu
+      when 'q' then return :quit
+      end
+    end
+  end
+end
+
+begin
+  mode = choose_mode
+
+  loop do
+    game = play(mode)
+
+    case game_over_menu(game)
+    when :replay then next
+    when :menu   then mode = choose_mode
+    when :quit   then break
+    end
   end
 ensure
-  print "\e[?25h"
+  print "\e[?25h\r\n"
 end

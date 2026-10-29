@@ -57,7 +57,7 @@ When the game ends, a menu appears:
 | `lib/board.rb` | Grid bounds, wrap-around and themed text rendering |
 | `lib/game.rb` | Rules of one turn (`tick`) in two modes (classic, chill): move, eat, score, game over |
 | `bin/snake` | Terminal UI: start menu, game loop, raw keyboard input, game over menu |
-
+| `lib/ui.rb` | Terminal decoration: colors, boxes, title and game over screens (pure text, unit-tested) |
 The game logic never touches the terminal, so every rule is unit-tested. Only `bin/snake` deals with input and screen.
 
 ## License
