@@ -1,7 +1,5 @@
 require_relative '../lib/snake'
 
-
-
 RSpec.describe Snake do
   let(:snake) { Snake.new(5, 5) }
 
@@ -13,13 +11,12 @@ RSpec.describe Snake do
 
   describe '#move' do
     it 'moves the head one cell to the right' do
-      snake.move                       # agir
-      expect(snake.head).to eq([6, 5]) # vérifier
+      snake.move
+      expect(snake.head).to eq([6, 5])
     end
   end
 
-
-    describe '#turn' do
+  describe '#turn' do
     it 'goes up after turning up' do
       snake.turn([0, -1])
       snake.move
@@ -32,7 +29,8 @@ RSpec.describe Snake do
       expect(snake.head).to eq([6, 5])
     end
   end
-    describe '#length' do
+
+  describe '#length' do
     it 'starts with 3 cells' do
       expect(snake.length).to eq(3)
     end
@@ -45,11 +43,21 @@ RSpec.describe Snake do
       expect(snake.head).to eq([6, 5])
     end
   end
+
   describe '#bites_itself?' do
-  it 'is false for a new snake' do
-    expect(snake.bites_itself?).to eq(false)
+    it 'is false for a new snake' do
+      expect(snake.bites_itself?).to eq(false)
+    end
+
+    it 'is true when the head hits the body' do
+      2.times { snake.grow }
+      snake.turn([0, 1])
+      snake.move
+      snake.turn([-1, 0])
+      snake.move
+      snake.turn([0, -1])
+      snake.move
+      expect(snake.bites_itself?).to eq(true)
+    end
   end
-end
-
-
 end
