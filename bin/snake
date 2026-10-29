@@ -2,8 +2,8 @@
 require 'io/console'
 require_relative '../lib/game'
 
-WIDTH = 20
-HEIGHT = 10
+WIDTH = 30
+HEIGHT = 18
 DELAY = 0.15
 
 DIRECTIONS = {
@@ -22,7 +22,7 @@ end
 
 def draw(game)
   header = "Score : #{game.score}   (fleches ou IJKL, q pour quitter)"
-  lines = [header] + game.render.split("\n")
+  lines = [header] + game.render(Board::EMOJI_THEME).split("\n")
   print "\e[H" + lines.map { |line| "#{line}\e[K" }.join("\r\n") + "\r\n\e[J"
 end
 

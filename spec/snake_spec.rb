@@ -14,6 +14,11 @@ RSpec.describe Snake do
       snake.move
       expect(snake.head).to eq([6, 5])
     end
+    
+    it 'moves the head to a given cell' do
+      snake.move([9, 9])
+      expect(snake.head).to eq([9, 9])
+    end
   end
 
   describe '#turn' do

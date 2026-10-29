@@ -25,18 +25,20 @@ class Game
   def tick
     return if over?
 
-    if @snake.next_head == @food.position
-      @snake.grow
+    target = @board.wrap(@snake.next_head)
+
+    if target == @food.position
+      @snake.grow(target)
       @score += 1
       @food.respawn(@snake.body)
     else
-      @snake.move
+      @snake.move(target)
     end
 
-    @over = true if !@board.inside?(@snake.head) || @snake.bites_itself?
+    @over = true if @snake.bites_itself?
   end
 
-  def render
-    @board.render(@snake, @food)
+  def render(theme = Board::DEFAULT_THEME)
+    @board.render(@snake, @food, theme)
   end
 end

@@ -1,7 +1,6 @@
 class Snake
   attr_reader :body
 
-
   def initialize(x, y)
     @body = [[x, y], [x - 1, y], [x - 2, y]]
     @direction = [1, 0]
@@ -15,8 +14,8 @@ class Snake
     [head[0] + @direction[0], head[1] + @direction[1]]
   end
 
-  def move
-    @body.unshift(next_head)
+  def move(cell = next_head)
+    @body.unshift(cell)
     @body.pop
   end
 
@@ -25,8 +24,8 @@ class Snake
     @direction = new_direction unless new_direction == opposite
   end
 
-  def grow
-    @body.unshift(next_head)
+  def grow(cell = next_head)
+    @body.unshift(cell)
   end
 
   def length
