@@ -22,7 +22,7 @@ Requires Ruby 3+ (check with `ruby -v`).
 | `L` or → | right |
 | `Q` | quit |
 
-Eat the `*` to grow. The game ends when you hit a wall or your own body.
+Eat the 🍎 to grow. The snake wraps around the edges of the board: the game ends only when it bites itself.
 
 ## Tests
 
@@ -35,7 +35,7 @@ Eat the `*` to grow. The game ends when you hit a wall or your own body.
 |------|------|
 | `lib/snake.rb` | Snake state: body, direction, movement, growth, self-collision |
 | `lib/food.rb` | Food placement, never on top of the snake |
-| `lib/board.rb` | Grid bounds check and text rendering |
+| `lib/board.rb` | Grid bounds, wrap-around and themed text rendering |
 | `lib/game.rb` | Rules of one turn (`tick`): move, eat, score, game over |
 | `bin/snake` | Terminal loop: raw keyboard input, timing, display |
 
