@@ -21,5 +21,13 @@ class Snake
     @direction = new_direction unless new_direction == opposite
   end
 
-end
+  def grow
+    x = head[0] + @direction[0]
+    y = head[1] + @direction[1]
+    @body.unshift([x, y])
+  end
 
+  def length
+    @body.size
+  end
+end

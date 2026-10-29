@@ -30,4 +30,17 @@ RSpec.describe Snake do
       expect(snake.head).to eq([6, 5])
     end
   end
+    describe '#length' do
+    it 'starts with 3 cells' do
+      expect(snake.length).to eq(3)
+    end
+  end
+
+  describe '#grow' do
+    it 'adds one cell and moves the head forward' do
+      snake.grow
+      expect(snake.length).to eq(4)
+      expect(snake.head).to eq([6, 5])
+    end
+  end
 end
