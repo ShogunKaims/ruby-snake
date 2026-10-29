@@ -1,2 +1,6 @@
 try.rb
-try.rb
+.DS_Store
+*.gem
+.bundle/
+coverage/
+.rspec_status
