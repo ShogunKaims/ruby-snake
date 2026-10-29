@@ -1,5 +1,7 @@
 require_relative '../lib/snake'
 
+
+
 RSpec.describe Snake do
   let(:snake) { Snake.new(5, 5) }
 
@@ -43,4 +45,6 @@ RSpec.describe Snake do
       expect(snake.head).to eq([6, 5])
     end
   end
+
+
 end
