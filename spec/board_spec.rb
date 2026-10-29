@@ -43,5 +43,21 @@ RSpec.describe Board do
 
       expect(small_board.render(snake, food)).to eq(expected)
     end
+
+    it 'does not crash when the snake is outside the board' do
+      small_board = Board.new(5, 5)
+      snake = Snake.new(2, 5)
+      food = Food.new(5, 5)
+
+      expected = [
+        '. . . . .',
+        '. . . . .',
+        '. . . . .',
+        '. . . * .',
+        '. . . . .'
+      ].join("\n")
+
+      expect(small_board.render(snake, food)).to eq(expected)
+    end
   end
 end

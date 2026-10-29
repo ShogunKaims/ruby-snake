@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+require 'io/console'
+require_relative '../lib/game'
+
+WIDTH = 20
+HEIGHT = 10
+DELAY = 0.15
+
+DIRECTIONS = {
+  "\e[A" => [0, -1], 'i' => [0, -1],
+  "\e[B" => [0, 1],  'k' => [0, 1],
+  "\e[C" => [1, 0],  'l' => [1, 0],
+  "\e[D" => [-1, 0], 'j' => [-1, 0]
+}
+
+def read_key
+  return nil unless IO.select([$stdin], nil, nil, 0)
+
+  key = $stdin.read_nonblock(3, exception: false)
+  key.is_a?(String) ? key : nil
+end
+
+def draw(game)
+  header = "Score : #{game.score}   (fleches ou IJKL, q pour quitter)"
+  lines = [header] + game.render.split("\n")
+  print "\e[H" + lines.map { |line| "#{line}\e[K" }.join("\r\n") + "\r\n\e[J"
+end
+
+game = Game.new(WIDTH, HEIGHT)
+
+begin
+  $stdin.raw(intr: true) do
+    print "\e[?25l\e[2J"
+
+    until game.over?
+      draw(game)
+      pending = nil
+      deadline = Time.now + DELAY
+
+      while Time.now < deadline
+        key = read_key
+        exit if key == 'q'
+        pending = DIRECTIONS[key] || pending
+        sleep 0.01
+      end
+
+      game.turn(pending) if pending
+      game.tick
+    end
+
+    draw(game)
+    print "\r\nGAME OVER - score : #{game.score}\r\n"
+  end
+ensure
+  print "\e[?25h"
+end

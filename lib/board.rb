@@ -10,18 +10,18 @@ class Board
   end
 
   def render(snake, food)
-  grid = Array.new(@height) { Array.new(@width, '.') }
+    grid = Array.new(@height) { Array.new(@width, '.') }
 
-  snake.body.each do |x, y|
-    grid[y][x] = 'O'
-  end
+    snake.body.each do |x, y|
+      grid[y][x] = 'O' if inside?([x, y])
+    end
 
-  head_x, head_y = snake.head
-  grid[head_y][head_x] = '@'
+    head_x, head_y = snake.head
+    grid[head_y][head_x] = '@' if inside?(snake.head)
 
-  food_x, food_y = food.position
-  grid[food_y][food_x] = '*'
+    food_x, food_y = food.position
+    grid[food_y][food_x] = '*'
 
-  grid.map { |row| row.join(' ') }.join("\n")
+    grid.map { |row| row.join(' ') }.join("\n")
   end
 end
